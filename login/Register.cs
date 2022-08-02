@@ -1,12 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace login
@@ -18,7 +13,7 @@ namespace login
             InitializeComponent();
 
             loginReg.Text = "Ввидите логин";
-            loginReg.ForeColor = Color.Gray;
+            loginReg.ForeColor = Color.FromArgb(78, 184, 206);
         }
 
         Point lastPoint;
@@ -66,7 +61,7 @@ namespace login
             if (loginReg.Text == "Ввидите логин")
             {
                 loginReg.Text = "";
-                loginReg.ForeColor = Color.Black;
+                loginReg.ForeColor = Color.White;
             }
         }
 
@@ -85,13 +80,12 @@ namespace login
             if (loginReg.Text == "")
             {
                 loginReg.Text = "Ввидите логин";
-                loginReg.ForeColor = Color.Gray;
+                loginReg.ForeColor = Color.FromArgb(78, 184, 206);
             }
         }
 
         private void passreg_Leave(object sender, EventArgs e)
         {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -123,13 +117,13 @@ namespace login
                 return;
             }
 
-            if(loginReg.Text == "")
+            if (loginReg.Text == "")
             {
                 MessageBox.Show("Вы не можете зарегистрировать аккаунт с такими данными!");
                 return;
             }
 
-            if(passreg.Text == "")
+            if (passreg.Text == "")
             {
                 MessageBox.Show("Вы не можете зарегистрировать аккаунт с такими данными!");
                 return;
@@ -137,19 +131,25 @@ namespace login
 
             if (IsUserExist())
                 return;
-         
 
-                dbmysqlcon db = new dbmysqlcon();
-            MySqlCommand command = new MySqlCommand("INSERT INTO `users` (`login`, `pass`) VALUES (@login, @password);", db.GetConnection());
+            String host = System.Net.Dns.GetHostName();
+            System.Net.IPAddress ip = System.Net.Dns.GetHostByName(host).AddressList[0];
+            //MessageBox.Show(ip.ToString());
+            dbmysqlcon db = new dbmysqlcon();
+            MySqlCommand command = new MySqlCommand("INSERT INTO `users` (`login`, `pass`, `ipuser`) VALUES (@login, @password, @ipuser);", db.GetConnection());
 
             command.Parameters.Add("@login", MySqlDbType.VarChar).Value = loginReg.Text;
             command.Parameters.Add("@password", MySqlDbType.VarChar).Value = passreg.Text;
+            command.Parameters.Add("@ipuser", MySqlDbType.VarChar).Value = ip.ToString();
 
             db.openConnection();
 
             if (command.ExecuteNonQuery() == 1)
             {
                 MessageBox.Show("Вы успешно зарегестрировались!");
+                Form f2 = new Form1();
+                this.Visible = false;
+                f2.Show();
             }
             else
             {
@@ -170,18 +170,78 @@ namespace login
             MySqlCommand command = new MySqlCommand("SELECT * FROM `users` WHERE `login` = @uL", db.GetConnection());
             command.Parameters.Add("@uL", MySqlDbType.VarChar).Value = loginReg.Text;
 
+
             adapter.SelectCommand = command;
             adapter.Fill(table);
 
             if (table.Rows.Count > 0)
             {
-                MessageBox.Show("Данный пользователь уже зарегестрирован!");
+                MessageBox.Show("Произошла ошибка или игрок с таким именем существует!");
                 return true;
             }
             else
             {
                 return false;
             }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void loginReg_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label123_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://vk.com/sinitskiy2k19");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://discord.gg/WEF3QMjwsE");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/Klayeryt");
+        }
+
+        private void label3_Click_1(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void Register_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/Klayeryt");
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://discord.gg/WEF3QMjwsE");
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://vk.com/sinitskiy2k19");
+        }
+
+        private void passreg_Click(object sender, EventArgs e)
+        {
         }
     }
 }
